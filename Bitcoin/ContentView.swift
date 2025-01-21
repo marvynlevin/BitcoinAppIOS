@@ -8,6 +8,15 @@
 import SwiftUI
 
 struct ContentView: View {
+    
+    @State var isEuro: Bool = false
+    @State var tabOfCryptoDesc: [Crypto] = [
+        Crypto(nameOfCrypto: "BIT", imageName: "bitcoin", price: 52),
+        Crypto(nameOfCrypto: "ETH", imageName: "ethereum", price: 21),
+        Crypto(nameOfCrypto: "XRP", imageName: "ripple", price: 6),
+        Crypto(nameOfCrypto: "XLM", imageName: "stellar", price: 11)
+    ]
+
     var body: some View {
         
         ZStack {
@@ -16,65 +25,53 @@ struct ContentView: View {
                 .edgesIgnoringSafeArea(.all)
                         
             VStack {
+                
                 HStack {
                     Text("Crypto App")
                         .font(.largeTitle)
                         .bold()
-                        .foregroundStyle(.green)
-                                    
-                    Image(systemName: "cloud.sun.fill")
-                        .renderingMode(.original)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 40, height: 40)
+                        .foregroundStyle(.mint)
+                               
+                    Button {
+                        convertDollardToEuro()
+                    } label: {
+                        Image(systemName: "arrow.clockwise.circle")
+                            .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                            .foregroundStyle(.mint)
+                    }
+                    
                 }
                 
+                .padding(.bottom, 40)
+                
                 HStack {
+                    Image(systemName: "calendar.circle.fill")
+                        .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
+                        .foregroundStyle(.mint)
+                    
                     Text("Monday September 13, 2021")
                         .font(.system(size: 20, weight: .medium))
-                        .foregroundStyle(.green)
-                        .padding(.bottom, 40)
-                    
-                    Image(systemName: "calendar.circle.fill")
-                        .renderingMode(.template)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 40, height: 40)
+                        .foregroundStyle(.white)
                 }
 
+                Spacer()
 
                 HStack (spacing: 20) {
-                    BitcoinVisualizeData(
-                        nameOfCrypto: "BIT",
-                        imageName: "bitcoin",
-                        temperature: 52
-                    )
-                    BitcoinVisualizeData(
-                        nameOfCrypto: "ETH",
-                        imageName: "ethereum",
-                        temperature: 21
-                    )
-                    BitcoinVisualizeData(
-                        nameOfCrypto: "XRP",
-                        imageName: "ripple",
-                        temperature: 6
-                    )
-                    BitcoinVisualizeData(
-                        nameOfCrypto: "XLM",
-                        imageName: "stellar",
-                        temperature: 11
-                    )
+                    BitcoinVisualizeData(crypto: tabOfCryptoDesc[0])
+                    BitcoinVisualizeData(crypto: tabOfCryptoDesc[1])
+                    BitcoinVisualizeData(crypto: tabOfCryptoDesc[2])
+                    BitcoinVisualizeData(crypto: tabOfCryptoDesc[3])
                 }
                 
                 Spacer()
                 
                 Button {
-                    //action à réaliser
-                    print("button tapped")
+                    isEuro.toggle()
                 } label: {
-                    Text("Changed Day Time")
+                    Text("Convert to €")
                         .frame(width: 280, height: 50)
                         .background(Color.white)
+                        .foregroundStyle(.black)
                         .font(.title2)
                         .bold()
                         .cornerRadius(12)
@@ -84,28 +81,37 @@ struct ContentView: View {
             }
         }
     }
+    
+    func convertDollardToEuro() {
+        for i in 0..<tabOfCryptoDesc.count {
+            tabOfCryptoDesc[i].price += 1;
+        }
+    }
 }
 
 // switfUI utilise plus des struct que les class
 struct BitcoinVisualizeData: View {
     
-    var dayOfWeek: String
-    var imageName: String
-    var temperature: Int
+    var crypto: Crypto
     
     var body: some View {
         VStack {
-            Text(dayOfWeek)
+            Text(crypto.nameOfCrypto)
                 .font(.title2)
                 .foregroundStyle(.white)
             
-            Image(imageName)
+            Image(crypto.imageName)
                 .renderingMode(.original)
                 .resizable()
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 60, height: 60)
             
-            Text("$ \(temperature)k")
+            isEuro ?
+            Text("$ \(crypto.price)k")
+                .font(.title2)
+                .foregroundStyle(.white)
+            :
+            Text("$ \(crypto.price)k")
                 .font(.title2)
                 .foregroundStyle(.white)
         }
