@@ -10,12 +10,8 @@ import SwiftUI
 struct ContentView: View {
     
     @State var isEuro: Bool = false
-    @State var tabOfCryptoDesc: [Crypto] = [
-        Crypto(nameOfCrypto: "BIT", imageName: "bitcoin", price: 52),
-        Crypto(nameOfCrypto: "ETH", imageName: "ethereum", price: 21),
-        Crypto(nameOfCrypto: "XRP", imageName: "ripple", price: 6),
-        Crypto(nameOfCrypto: "XLM", imageName: "stellar", price: 11)
-    ]
+    
+    @EnvironmentObject var cryptosVM: CryptoViewModel
 
     var body: some View {
         
@@ -33,7 +29,7 @@ struct ContentView: View {
                         .foregroundStyle(.mint)
                                
                     Button {
-                        convertDollardToEuro()
+                        cryptosVM.convertDollardToEuro()
                     } label: {
                         Image(systemName: "arrow.clockwise.circle")
                             .font(/*@START_MENU_TOKEN@*/.title/*@END_MENU_TOKEN@*/)
@@ -57,10 +53,10 @@ struct ContentView: View {
                 Spacer()
 
                 HStack (spacing: 20) {
-                    BitcoinVisualizeData(crypto: tabOfCryptoDesc[0])
-                    BitcoinVisualizeData(crypto: tabOfCryptoDesc[1])
-                    BitcoinVisualizeData(crypto: tabOfCryptoDesc[2])
-                    BitcoinVisualizeData(crypto: tabOfCryptoDesc[3])
+                    BitcoinVisualizeData(crypto: cryptosVM.cryptos[0])
+                    BitcoinVisualizeData(crypto: cryptosVM.cryptos[1])
+                    BitcoinVisualizeData(crypto: cryptosVM.cryptos[2])
+                    BitcoinVisualizeData(crypto: cryptosVM.cryptos[3])
                 }
                 
                 Spacer()
@@ -79,12 +75,6 @@ struct ContentView: View {
                 
                 Spacer()
             }
-        }
-    }
-    
-    func convertDollardToEuro() {
-        for i in 0..<tabOfCryptoDesc.count {
-            tabOfCryptoDesc[i].price += 1;
         }
     }
 }
@@ -106,12 +96,9 @@ struct BitcoinVisualizeData: View {
                 .aspectRatio(contentMode: .fill)
                 .frame(width: 60, height: 60)
             
-            isEuro ?
-            Text("$ \(crypto.price)k")
-                .font(.title2)
-                .foregroundStyle(.white)
-            :
-            Text("$ \(crypto.price)k")
+            let priceChange = "$ \(crypto.price)k"
+            
+            Text(priceChange)
                 .font(.title2)
                 .foregroundStyle(.white)
         }
@@ -120,4 +107,5 @@ struct BitcoinVisualizeData: View {
 
 #Preview {
     ContentView()
+        .environmentObject(CryptoViewModel())
 }
